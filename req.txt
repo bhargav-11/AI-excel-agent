@@ -1,0 +1,10 @@
+streamlit
+pandas
+openpyxl
+langchain
+openai
+tiktoken
+duckduckgo-search
+pandas
+openpyxl
+xlrd
