@@ -61,11 +61,11 @@ def write_row(row):
 
 def process_file(agent, uploaded_file):
     processed_rows = []
-    
+
     # Reading CSV with pandas
     df = pd.read_csv(uploaded_file)
     counter = 0
-    
+
     for index, row in df.iterrows():
         processed_row = process_row(agent, row.tolist())  # Converting row to list
         write_row(processed_row)
@@ -86,9 +86,14 @@ def process_file(agent, uploaded_file):
 
 def get_csv_download_link(csv_data, filename="result.csv", link_text="Download processed CSV"):
     import base64
-    csv_str = "\n".join([",".join(map(str, row)) for row in csv_data])
+
+    csv_str = convert_to_csv_str(csv_data)
+
+    # Encode CSV string in Base64
     b64 = base64.b64encode(csv_str.encode()).decode()
-    return f'<a href="data:file/csv;base64,{b64}" download="{filename}">{link_text}</a>'
+
+    # Create a download link in Streamlit
+    st.markdown(f'<a href="data:file/csv;base64,{b64}" download="result.csv">Download processed CSV</a>', unsafe_allow_html=True)
 
 def convert_to_csv_str(data):
     output = io.StringIO()
@@ -121,7 +126,7 @@ def main():
                     llm = ChatOpenAI(temperature=0.5, openai_api_key=api_key, model="gpt-4-0613")
                     agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
                     result = process_file(agent, uploaded_file)
-                    st.markdown(get_csv_download_link(result), unsafe_allow_html=True)
+                    get_csv_download_link(result)
 
 if __name__ == "__main__":
     main()
