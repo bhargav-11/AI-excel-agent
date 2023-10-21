@@ -17,6 +17,8 @@ import pandas as pd
 import io
 
 
+# I AM BOSS
+
 prompt = """
 You are a helpful assistant to validate information.
 Based on below provided 'Company' and 'Designation' if the Company is in B2C(Business to Consumer) and 
@@ -64,13 +66,22 @@ def process_file(agent, uploaded_file):
 
     # Reading CSV with pandas
     df = pd.read_csv(uploaded_file)
-    counter = 0
+    counter = 1
+
+    placeholder = st.empty()
 
     for index, row in df.iterrows():
+        placeholder.write('processing row ..... {}'.format(counter))
+
+        if st.session_state.stop_processing:
+            st.warning("Processing was stopped by the user!")
+            return processed_rows
+
         processed_row = process_row(agent, row.tolist())  # Converting row to list
         write_row(processed_row)
         processed_rows.append(processed_row)
         counter += 1
+        
         if counter % 30 == 0:
             st.write("---------------> processed {} rows".format(counter))
             # Convert to CSV string while properly handling commas
@@ -93,7 +104,7 @@ def get_csv_download_link(csv_data, filename="result.csv", link_text="Download p
     b64 = base64.b64encode(csv_str.encode()).decode()
 
     # Create a download link in Streamlit
-    st.markdown(f'<a href="data:file/csv;base64,{b64}" download="result.csv">Download processed CSV</a>', unsafe_allow_html=True)
+    st.markdown(f'<a href="data:file/csv;base64,{b64}" download="result.csv">Download Full Processed CSV</a>', unsafe_allow_html=True)
 
 def convert_to_csv_str(data):
     output = io.StringIO()
@@ -109,12 +120,17 @@ def authenticate():
 def main():
     st.title("AI Data Sorting")
 
+    st.session_state.stop_processing = False
+
     if authenticate():
         api_key = st.text_input("Enter API Key:")
-
         uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
 
         if uploaded_file:
+            # Button to stop processing
+            if st.button("Stop Processing"):
+                st.write("processing stopped by user!")
+
             if st.button("Process"):
                 if not api_key:
                     st.warning("Please enter an API key!")
