@@ -8,3 +8,4 @@ duckduckgo-search
 pandas
 openpyxl
 xlrd
+bs4
