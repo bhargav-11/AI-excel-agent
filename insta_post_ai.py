@@ -7,11 +7,6 @@ from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 
-from dotenv import load_dotenv
-import openai
-
-load_dotenv()
-
 import openai
 
 st.title("Instagram Post Generator")
