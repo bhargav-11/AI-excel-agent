@@ -10,3 +10,4 @@ openpyxl
 xlrd
 bs4
 chromadb
+pysqlite3-binary
