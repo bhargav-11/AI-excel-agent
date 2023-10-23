@@ -9,3 +9,4 @@ pandas
 openpyxl
 xlrd
 bs4
+chromadb
